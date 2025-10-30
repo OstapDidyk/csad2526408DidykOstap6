@@ -1,0 +1,5 @@
+// generate a CMakeLists.txt file for a simple C++ project
+cmake_minimum_required(VERSION 3.10)
+project(SimpleProject)  
+set(CMAKE_CXX_STANDARD 11)
+add_executable(SimpleProject main.cpp)
