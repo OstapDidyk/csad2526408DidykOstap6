@@ -1,13 +1,9 @@
-// generate untit test for add function
+//rewrite code using TEST, ASSERT_EQ, EXPECT_EQ from gtest
 #include "./math_operations.h"
-#include <cassert>
-void test_add() {
-    assert(add(2, 3) == 5);
-    assert(add(-1, 1) == 0);
-    assert(add(0, 0) == 0);
-    assert(add(-2, -3) == -5);
-}
-int main() {
-    test_add();
-    return 0;
+#include <gtest/gtest.h>
+TEST(MathOperationsTest, Add) {
+    EXPECT_EQ(add(2, 3), 5);
+    EXPECT_EQ(add(-1, 1), 0);
+    EXPECT_EQ(add(0, 0), 0);
+    EXPECT_EQ(add(-2, -3), -5);
 }
