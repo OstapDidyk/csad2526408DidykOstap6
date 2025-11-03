@@ -1,18 +1,23 @@
-// generate a CMakeLists.txt file for a simple C++ project
-cmake_minimum_required(VERSION 3.10)
-project(SimpleProject)  
-set(CMAKE_CXX_STANDARD 11)
-add_executable(SimpleProject main.cpp)
-// generate Google Test support
+Request to Copilot: //generate add function
+Response from Copilot:
+#ifndef MATH_OPERATIONS_H
+#define MATH_OPERATIONS_H
+int add(int a, int b);
+#endif // MATH_OPERATIONS_H
+
+Request to Copilot: // generate Google Test support
+Response from Copilot:
 enable_testing()
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 add_executable(runTests test_math_operations.cpp math_operations.cpp)
 target_link_libraries(runTests ${GTEST_LIBRARIES} pthread)
 add_test(NAME runTests COMMAND runTests)
-// generate instructions to build and run the project with gtest
+
+Request to Copilot: // generate instructions to build and run the project with tests
+Response from Copilot:
 # To build the project, use the following commands:
-# mkdir build
+# mkdir build   
 # cd build
 # cmake ..
 # make
