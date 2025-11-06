@@ -1,0 +1,58 @@
+name: CMake Cross-Platform Build and Test
+
+# Trigger: Запускати акцію при push або pull request у гілки, що містять develop або master
+on:
+  push:
+    branches:
+      - 'develop'
+      - '*develop*'
+      - 'master'
+      - '*master*'
+      
+  pull_request:
+    branches:
+      - 'develop'
+      - 'master'
+
+# Єдина Job для кросплатформенної збірки
+jobs:
+  cross_build:
+    # Визначення матриці для трьох ОС
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    # Запуск Job на віртуальній машині, визначеній матрицею
+    runs-on: ${{ matrix.os }}
+    
+    # Checkout коду (actions/checkout@v4)
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+        # Встановлення CMake (якщо потрібно).
+      - name: Install CMake (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: sudo apt-get update && sudo apt-get install -y cmake
+        
+        #Запуск команд конфігурації та білдування (запуск скрипту з Етапу3).
+      - name: Create Build Directory
+        run: mkdir build
+        
+      - name: Configure CMake
+        run: cmake -B build -S .
+        
+      - name: Build Project
+        run: cmake --build build
+        
+      - name: Run CTest and Unit Tests
+        run: ctest --verbose --output-on-failure
+        working-directory: build
+        
+        #Deploy
+      - name: Deploy / Upload Build Artifact (optional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-build-output
+          path: build/
+          retention-days: 1
