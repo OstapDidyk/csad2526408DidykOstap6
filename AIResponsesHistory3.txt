@@ -3,7 +3,17 @@ Response from Copilot:
 #ifndef MATH_OPERATIONS_H
 #define MATH_OPERATIONS_H
 int add(int a, int b);
+int subtract(int a, int b);
 #endif // MATH_OPERATIONS_H
+
+// generate math_operations.cpp with simple functions
+#include "math_operations.h"
+int add(int a, int b) {
+    return a + b;
+}
+int subtract(int a, int b) {
+    return a - b;
+}
 
 Request to Copilot: // generate Google Test support
 Response from Copilot:
@@ -14,8 +24,7 @@ add_executable(runTests test_math_operations.cpp math_operations.cpp)
 target_link_libraries(runTests ${GTEST_LIBRARIES} pthread)
 add_test(NAME runTests COMMAND runTests)
 
-Request to Copilot: // generate instructions to build and run the project with tests
-Response from Copilot:
+// generate instructions to build and run the project with gtest
 # To build the project, use the following commands:
 # mkdir build   
 # cd build
@@ -23,3 +32,13 @@ Response from Copilot:
 # make
 # To run the tests, use the command:
 # ./runTests
+
+//rewrite code using TEST, ASSERT_EQ, EXPECT_EQ from gtest
+#include "./math_operations.h"
+#include <gtest/gtest.h>
+TEST(MathOperationsTest, Add) {
+    EXPECT_EQ(add(2, 3), 5);
+    EXPECT_EQ(add(-1, 1), 0);
+    EXPECT_EQ(add(0, 0), 0);
+    EXPECT_EQ(add(-2, -3), -5);
+}

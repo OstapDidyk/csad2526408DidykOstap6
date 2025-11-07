@@ -1,20 +1,49 @@
-// generate a CMakeLists.txt file for a simple C++ project
+# --- INSTRUCTIONS FOR DEVELOPERS ---
+# To build the project, use the following commands (must be run from the repository root):
+# 1. Create a build directory:
+#    mkdir build
+#    cd build
+# 2. Configure the project (find dependencies):
+#    cmake ..
+# 3. Compile the project and tests:
+#    make
+# 4. To run the tests, use the command (from the 'build' directory):
+#    ./runTests
+# -----------------------------------
+
 cmake_minimum_required(VERSION 3.10)
-project(SimpleProject)  
+project(OstapDidykProject LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
-add_executable(SimpleProject main.cpp)
-// generate Google Test support
+
+# Add the main executable
+add_executable(SimpleProject main.cpp math_operations.cpp)
+
+# --- GOOGLE TEST CONFIGURATION ---
 enable_testing()
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
-add_executable(runTests test_math_operations.cpp math_operations.cpp)
-target_link_libraries(runTests ${GTEST_LIBRARIES} pthread)
+
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/refs/tags/release-1.14.0.zip
+)
+# Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+# Use modern imported target GTest::gtest_main
+add_executable(runTests tests/unit_tests.cpp math_operations.cpp)
+
+target_link_libraries(runTests
+  PRIVATE
+    GTest::gtest_main
+)
+
+# pthread is only needed on POSIX
+if(UNIX)
+  target_link_libraries(runTests PRIVATE pthread)
+endif()
+
 add_test(NAME runTests COMMAND runTests)
-// generate instructions to build and run the project with gtest
-# To build the project, use the following commands:
-# mkdir build
-# cd build
-# cmake ..
-# make
-# To run the tests, use the command:
-# ./runTests
+
+# Register tests for 'ctest'
+add_test(NAME runTests COMMAND runTests)

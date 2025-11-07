@@ -1,0 +1,63 @@
+name: CMake Cross-Platform Build and Test
+
+Request to Copilot: # Trigger: Запускати акцію при push або pull request у гілки, що містять develop або master
+on:
+  push:
+    branches:
+      - 'develop'
+      - '*develop*'
+      - 'master'
+      - '*master*'
+      
+  pull_request:
+    branches:
+      - 'develop'
+      - 'master'
+
+jobs:
+  cross_build:
+    # Визначення матриці для трьох ОС
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - name: Checkout Code
+        Request to Copilot:  # Крок 1: Отримання коду
+        uses: actions/checkout@v4
+      
+      Request to Copilot:  # Крок 2: Встановлення CMake (умовна логіка для Linux та macOS)
+      - name: Install CMake Dependencies
+        if: runner.os != 'Windows'
+        run: |
+          if [ "${{ runner.os }}" == "Linux" ]; then
+            sudo apt-get update
+            sudo apt-get install -y cmake
+          elif [ "${{ runner.os }}" == "macOS" ]; then
+            # Використовуємо Homebrew (brew) для macOS
+            brew update
+            brew install cmake
+          fi
+
+      - name: Configure CMake
+        Request to Copilot: # Конфігурування: створюємо каталог збірки (-B build) і вказуємо кореневий каталог (-S .)
+        run: cmake -B build -S .
+        
+      - name: Build Project
+        Request to Copilot: # Білдування проекту
+        run: cmake --build build
+        
+      - name: Run CTest and Unit Tests
+        Request to Copilot:  # Запуск тестів CTest.
+        run: ctest --verbose --output-on-failure
+        working-directory: build
+        
+      - name: Upload Build Artifact (Deploy)
+        Request to Copilot:  # Зберігаємо результати збірки як артефакт
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-build-output
+          path: build/
+          retention-days: 1
